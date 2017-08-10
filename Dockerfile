@@ -3,6 +3,7 @@ FROM openjdk:8-jdk
 RUN apt-get update && apt-get install -y git curl && rm -rf /var/lib/apt/lists/*
 
 ARG user=jenkins
+ARG root=root
 ARG group=jenkins
 ARG uid=1000
 ARG gid=1000
@@ -63,6 +64,11 @@ EXPOSE ${agent_port}
 
 ENV COPY_REFERENCE_FILE_LOG $JENKINS_HOME/copy_reference_file.log
 
+# install more tools
+USER ${root}
+RUN apt-get update && apt-get install -y make
+
+# drop back to the regular jenkins user
 USER ${user}
 
 COPY jenkins-support /usr/local/bin/jenkins-support
